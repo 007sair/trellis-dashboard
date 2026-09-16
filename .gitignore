@@ -3,3 +3,12 @@
 /.comet/*
 !/.comet/config.yaml
 # <<< Comet managed project state <<<
+
+node_modules/
+dist/
+test-results/
+playwright-report/
+coverage/
+*.tgz
+.DS_Store
+.worktrees/

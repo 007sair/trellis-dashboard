@@ -1,0 +1,386 @@
+schema: comet.native.v4
+name: trellis-dashboard
+language: zh-CN
+phase: archive
+status: done
+state_version: 25
+brief: brief.md
+shape_confirmation_hash: c0d744ef9eebd61130eb68c3c663369096204b526e9581bff0bf09dea63b7670
+spec_changes:
+  - capability: dashboard
+    operation: create
+    source: specs/dashboard/spec.md
+workspace:
+  isolation: worktree
+  change_branch: comet/trellis-dashboard
+  target_branch: main
+  finish: merge
+loop:
+  stage: done
+  goal_cycle: 4
+  iteration: 1
+  attempt: 1
+  retry_epoch: 0
+  failed_iteration_count: 0
+  no_progress_count: 0
+  execution_failure_count: 0
+  previous_unresolved_ids: []
+  next_action: null
+acceptance:
+  - id: A1
+    source: brief.md
+    text: 安装构建好的本地包后，从含 `.trellis`
+      的项目根目录或其子目录运行命令，定位最近项目并启动回环地址面板；支持显式目录、端口、不打开浏览器；找不到目录或端口不可用时给出可行动错误，不修改目标项目。
+    result: passed
+    reason:
+      text: "`bin/trellis-dashboard.mjs` loads built CLI; `src/server/cli.ts`
+        implements nearest-project discovery,
+        --dir/--port/--no-open/help/version and graceful signal shutdown;
+        `src/server/http.ts` binds only 127.0.0.1. Formal Runtime check
+        `dashboard-all-panels-validation` passed, including offline isolated
+        package installation, nested Unicode-project launch, asset/API access,
+        unchanged source, and clean shutdown."
+      truncated: false
+  - id: A2
+    source: brief.md
+    text: 样例的六个任务按真实字段显示；支持活动/归档任务、父子关系、空/null 字段和未知状态；不会把 in_progress 自动视为已验收或已完成。
+    result: passed
+    reason:
+      text: "`src/server/store.ts` scans active and archive task.json directories
+        without assuming directory=id, preserves raw metadata/unknown
+        statuses/null fields and assigns artifacts to nearest task; `Tasks.tsx`
+        renders board/list/archive and `TaskDetail.tsx` exposes relations and
+        raw metadata. `test/store.test.ts` covers archive, true IDs, relations,
+        null fallbacks and custom status; formal real-project smoke read 6 tasks
+        with diagnostics=0."
+      truncated: false
+  - id: A3
+    source: brief.md
+    text: 用户能在看板/列表中搜索并按状态、优先级、负责人筛选，统计与展示集合一致，清空筛选后恢复全部匹配任务；任务面板标题、统计和工具区紧凑且固定，看板各列卡片独立滚动、列头固定，列表数据区独立滚动、表头固定，内容占满剩余视口；滚动到底部不带动整页或旁列，窄屏看板可横向切列、筛选按需展开后仍可完整操作，无页面级横向或纵向溢出。
+    result: passed
+    reason:
+      text: "`Tasks.tsx` provides compound query/status/priority/assignee filters,
+        archive scope, sort, list/board switch, clear control, mobile filter
+        dialog and preserved board element/scroll state across snapshot
+        refreshes. `styles.css` implements viewport containment, compact
+        heading/stats, independently scrolling `.lane-cards`, contained
+        horizontal `.board`, independently scrolling `.task-table-wrap`, and
+        sticky table headers. Formal 15/15 Chromium run includes all four
+        `tasks-layout.spec.ts` cases: desktop lane isolation, sticky
+        table/filter behavior, mobile horizontal lanes/full filters, and
+        1024/760/320 viewport containment. Real-project smoke measured
+        pageHeight 900/844, compact stats 60/62px, board 486/369px and table
+        533/416px."
+      truncated: false
+  - id: A4
+    source: brief.md
+    text: 任务详情能读取存在的 PRD、设计、执行计划、research 与 JSONL
+      上下文清单；缺失可选文件不报整个页面失败，完整任务信息和原始元数据仍可访问；默认阅读时次要元信息不挤占正文，1440×900
+      桌面视口正文滚动区不少于 630px，390×844 移动视口不少于 422px；产物目录与正文独立滚动，弹层头部、产物标签和文档工具栏保持固定。
+    result: passed
+    reason:
+      text: "`TaskDetail.tsx` and `Documents.tsx` provide task artifacts,
+        JSON/JSONL/Markdown reading, separate information and raw-metadata tabs,
+        separate artifact/body scroll containers, and fixed dialog/document
+        controls; `styles.css` makes the dialog a bounded viewport frame.
+        `reading-layout.spec.ts` verifies long content, independent boundary
+        scrolling, retained task information and actual body heights >=630px
+        desktop and >=422px mobile. Formal real-project smoke measured dialog
+        body 694px desktop and 571px mobile."
+      truncated: false
+  - id: A5
+    source: brief.md
+    text: 计划进度只由 implement.md 的实际复选框计算，并显示已勾选/总数与来源；没有可计算计划时显示未提供，不凭空给出百分比、阶段或验证通过结论。
+    result: passed
+    reason:
+      text: "`src/server/progress.ts` parses Markdown AST list-item checkboxes only
+        and returns null when no checklist exists; `TaskDetail.tsx` and task
+        cards display the resulting X/Y or 未提供 and explicitly state that plan
+        progress is not acceptance. `shared.test.ts` verifies fenced/indented
+        code is excluded and no-checklist input returns null; the formal Runtime
+        check passed all 21 unit/integration tests."
+      truncated: false
+  - id: A6
+    source: brief.md
+    text: 规范页按真实目录组织所有 Markdown，工作记录页按开发者提供索引与 journal 浏览，兼容样例的 14 份规范及 5
+      份工作记录文件且缺失可选目录时显示空态；两个页面标题紧凑、右侧提供搜索工具，目录列表与 Markdown
+      正文独立滚动，不带动整页、标题或工具栏；1440×900 正文滚动区不少于 630px，390×844 默认目录收起且正文不少于
+      422px，仍可展开目录选择文档，无页面横向溢出。
+    result: passed
+    reason:
+      text: "`DocumentLibrary` organizes real `spec/` and `workspace/` paths, groups
+        workspace by developer, supplies compact right-side search and an
+        accessible mobile directory; `Documents.tsx` keeps directory/body scroll
+        independently bounded. `reading-layout.spec.ts` verifies both modules'
+        desktop independent scrolling, refresh/anchor retention, 630px body
+        minimum, mobile closed-by-default directory, 422px body minimum and no
+        page overflow. Formal real-project smoke read 14 specs and 5 workspace
+        documents and measured 674px desktop / 569px mobile body heights for
+        both modules."
+      truncated: false
+  - id: A7
+    source: brief.md
+    text: 页面在外部新增、更新、删除任务/文档后五秒内或手动刷新时同步；目录消失或读取失败显示明确错误，不把旧快照冒充新状态。
+    result: passed
+    reason:
+      text: "`useSnapshot` refreshes every two seconds and supports manual refresh;
+        server scans fresh state rather than serving a retained snapshot, while
+        document refresh keeps the existing scroll container.
+        `dashboard.spec.ts` verifies create/update/delete synchronization,
+        document update/deletion, root-loss stale-data clearing and recovery;
+        `reading-layout.spec.ts` and `tasks-layout.spec.ts` verify
+        unchanged-view refresh preserves reading and task scroll positions.
+        These browser cases passed in the formal Runtime check."
+      truncated: false
+  - id: A8
+    source: brief.md
+    text: 空项目、缺失可选目录、损坏 task.json/JSONL、未识别状态和不支持文件均有可理解反馈；单文件损坏不阻止其他合法任务展示。
+    result: passed
+    reason:
+      text: "`TrellisStore` isolates invalid metadata into diagnostics, treats missing
+        optional top-level folders as valid empty states, enforces
+        readable/type/size checks, and keeps valid tasks/documents available;
+        `Documents.tsx` gives JSONL per-line and unsupported/read errors visible
+        feedback. `store.test.ts`, `shared.test.ts`, and `dashboard.spec.ts`
+        cover malformed task JSON, empty folders, malformed JSONL, unknown
+        statuses, size/type errors and actionable UI states. Formal Runtime
+        check passed all 21 unit/integration and 15 browser tests."
+      truncated: false
+  - id: A9
+    source: brief.md
+    text: 默认只监听本机回环地址；文件读取限制在获准的 Trellis 内容内；拒绝目录穿越与越界 symlink，Markdown 不执行
+      HTML/脚本；只读模式下全程不改变目标项目文件。
+    result: passed
+    reason:
+      text: "`src/server/http.ts` listens on 127.0.0.1, permits GET/HEAD only,
+        validates Host/Origin, and emits restrictive CSP/security headers.
+        `src/server/project.ts` and `store.ts` reject traversal, absolute/hidden
+        paths and out-of-root symlinks, use realpath/inode rechecks, restrict
+        readable content types, and open files read-only; `Documents.tsx` skips
+        raw Markdown HTML, blocks unsafe links and suppresses image loading.
+        `http.test.ts` and `store.test.ts` exercise writes,
+        rebinding/cross-origin reads, traversal and symlink escape; formal
+        real-project smoke hashed 120 source files before/after and reported
+        sourceUnchanged=true."
+      truncated: false
+  - id: A10
+    source: brief.md
+    text: 提供可安装的 CLI 构建产物、README 使用步骤和测试；在独立临时 Trellis fixture
+      及提供的真实样例上做只读冒烟验证，不将样例业务内容提交进仓库，不声称未执行的检查通过。
+    result: passed
+    reason:
+      text: "`package.json` declares the CLI and distributable files;
+        `scripts/test-package.mjs` verifies npm pack, offline isolated
+        installation, executable launch and bundled assets; `README.md`
+        documents local-only installation, parameters, constraints and all
+        validation commands without claiming npm publication. Formal Runtime
+        evidence records successful typecheck/build, 21/21 unit-integration
+        tests, 15/15 Chromium tests, package test, and real-project read-only
+        smoke (6 tasks, 14 specs, 5 workspace entries, 51 documents, 120-file
+        unchanged digest)."
+      truncated: false
+builder_handoff:
+  candidate_id: bd8e62fc-2812-418c-9046-8b4e6e73b880
+  identity_provider: skill-coordinated
+  builder_execution_ref: skill-coordinated:builder:2021af58-4d7a-42e4-9995-e06a6b4545b9
+  iteration: 1
+  summary:
+    text: 补齐用户已确认的任务面板屏效要求，重点扩展 A3，保持 A1–A10 全部功能及 A4/A6 阅读布局。统一 viewport-mode
+      固定框架；紧凑任务标题/统计/工具；每列卡片独立纵向滚动，列表独立滚动且表头粘性固定；窄屏横向切列与完整筛选弹层，保持同一视图刷新位置。修改
+      Tasks.tsx、App.tsx、styles.css，新增 tasks-layout 浏览器回归并扩展
+      README/真实项目脚本。开发期当前源码 npm run check 全部通过：21 项单元集成、15 项
+      Chromium、类型/构建/离线安装。曾发现新测试在 CSS
+      横向吸附动画结束前取样，独立事件时序证明与刷新无关，现改为吸附稳定后严格校验刷新位置，已复测通过。显式 Node 真实项目检查通过，6 任务/14
+      规范/5 工作记录/51 文档、120 源文件摘要不变。1440×900 下整页 900px，统计 60px（原124），首卡片
+      y=339（原535），卡片视窗486px/表格533px；390×844
+      下整页844px，卡片369px/表格416px。原阅读高度保持：桌面弹层694、规范/工作记录674，移动571/569/569。新本地包已生成，未发布
+      npm、未归档合并或清理。尚待正式独立验收。
+    truncated: false
+  addressed_acceptance_ids:
+    - A1
+    - A2
+    - A3
+    - A4
+    - A5
+    - A6
+    - A7
+    - A8
+    - A9
+    - A10
+  checks:
+    - name:
+        text: npm run check
+        truncated: false
+      result: passed
+      note:
+        text: typecheck/build、21/21 单元集成、15/15 Chromium、离线临时全局安装全部通过
+        truncated: false
+    - name:
+        text: node scripts/smoke-project.mjs --dir <provided-project> --expect-tasks 6
+          --expect-specs 14 --expect-workspace 5 --screenshot
+          test-results/real-project.png
+        truncated: false
+      result: passed
+      note:
+        text: 真实项目任务面板及全部阅读区域的桌面/移动尺寸与只读检查通过
+        truncated: false
+    - name:
+        text: npm pack --ignore-scripts --json
+        truncated: false
+      result: passed
+      note:
+        text: 更新后的本地包仅含 8 项分发文件
+        truncated: false
+  checks_truncated: false
+  known_limits:
+    - text: 实测 macOS + Node.js 22 + Chromium；Windows/Linux、Node.js 18.18、Safari
+        和移动实机未验证
+      truncated: false
+    - text: 布局回归覆盖 1440×900、1024×768、760×800、390×844、320×640；原阅读高度阈值依已确认的桌面/移动视口
+      truncated: false
+    - text: 仍为只读本地交付，未发布 npm 或执行 Git/工作区收尾
+      truncated: false
+  known_limits_truncated: false
+  review: null
+  submitted_at: 2026-09-16T19:11:23.722Z
+blockers: []
+verification:
+  candidate_id: bd8e62fc-2812-418c-9046-8b4e6e73b880
+  identity_provider: skill-coordinated
+  verifier_execution_ref: skill-coordinated:verifier:10f4e5fd-4627-41c5-84c5-fbd04cce74a0
+  iteration: 1
+  attempt: 1
+  assurance: skill-coordinated
+  verdict: pass
+  checks:
+    - id: dashboard-all-panels-validation
+      name:
+        text: 完整屏效回归：21 项单元集成、15 项浏览器、安装及真实项目所有面板/只读检查
+        truncated: false
+      argv_display:
+        - text: --noprofile
+          truncated: false
+        - text: --norc
+          truncated: false
+        - text: -c
+          truncated: false
+        - text: npm run check && node scripts/smoke-project.mjs --dir
+            /Users/longchan/Desktop/workspace/product-center --expect-tasks 6
+            --expect-specs 14 --expect-workspace 5 --screenshot
+            test-results/real-project.png
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 59229
+  summary:
+    text: 独立读取本轮 brief、完整 A1–A10 详情、源码、测试、README、打包/真实项目冒烟脚本及正式 Runtime
+      回执后验收通过。Runtime
+      `.comet/runtime/native/changes/trellis-dashboard/state.json` binds
+      candidateId `bd8e62fc-2812-418c-9046-8b4e6e73b880`, inputFingerprint
+      `4140d0799c9082776fc4b94a736cc3002a551bed4e390a7524ea0439fb6bd956`,
+      workspace/worktree
+      `/Users/longchan/orca/projects/trellis-dashboard/.worktrees/trellis-dashboard`,
+      branch `comet/trellis-dashboard`, machine `ZBMAC-bcb59c9e5`, and verifier
+      execution
+      `skill-coordinated:verifier:10f4e5fd-4627-41c5-84c5-fbd04cce74a0`. Its
+      sole formal check is passed with exitCode 0. No scope-qualified,
+      reproducible defect was found.
+    truncated: false
+  risks:
+    - text: Formal browser/layout evidence was executed on macOS, Node.js 22 and
+        Chromium only. Windows, Linux, Node.js 18.18, Safari, and physical
+        mobile-device behavior were not independently exercised in this
+        verification.
+      truncated: false
+  risks_truncated: false
+  completed_at: 2026-09-16T19:18:44.159Z
+history:
+  - goal_cycle: 1
+    iteration: 0
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native Shape artifacts changed
+      truncated: false
+    completed_at: 2026-09-16T16:38:30.351Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: 独立读取完整需求、状态与正式 Runtime 回执后，直接审查 CLI、服务端受限读取/HTTP、共享逻辑、客户端、测试、打包脚本、README
+        和锁文件。Runtime candidateId、工作区、分支、机器及 verifier execution
+        信息与本轮绑定值一致；正式全量检查已通过。A1–A10 均有代码与正式检查证据支持，未发现范围内可证实缺陷。
+      truncated: false
+    completed_at: 2026-09-16T17:29:15.354Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 1
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: 用户尚未接受结果，补充阅读布局要求：任务弹层 Markdown 可见高度不足；规范库和工作记录标题右侧空白过多；滚动时应仅滚动目标目录列表或
+        Markdown，不带动整个右侧页面。仅修订阅读布局和对应验收标准，保持本地只读、三个模块及所有数据/安全行为不变。
+      truncated: false
+    completed_at: 2026-09-16T17:41:41.056Z
+  - goal_cycle: 3
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: 已重新独立读取本轮完整 brief、Spec、state、候选源码、全部测试/打包脚本、README 与 Runtime
+        正式日志；未复用前候选结论。Runtime state.json 的
+        candidateId、inputFingerprint=28c1ac3601366b03b7137a17a31274bc194698b4dc616e495eb1e2e7d2e0030a、projectRoot/worktreeRoot、branch=comet/trellis-dashboard、machineId=ZBMAC-bcb59c9e5
+        和 verifier executionId 均与本轮绑定一致。dashboard-reading-validation 在该工作区以
+        exitCode 0 完成；A1–A10 均有当前源码和正式检查证据支持，未发现本范围内可证实缺陷。
+      truncated: false
+    completed_at: 2026-09-16T18:23:25.567Z
+  - goal_cycle: 3
+    iteration: 1
+    attempt: 1
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: 用户指出整体屏效优化还应覆盖任务面板，上一轮只调整了任务弹层、规范库和工作记录。补齐任务面板的紧凑标题/统计/筛选、看板各列及列表独立滚动、固定导航/工具/表头与窄屏操作，扩展
+        A3，保留已完成的 A4/A6 阅读布局和全部只读/数据功能。用户尚未接受结果，不进入归档。
+      truncated: false
+    completed_at: 2026-09-16T18:33:46.684Z
+  - goal_cycle: 4
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: 独立读取本轮 brief、完整 A1–A10 详情、源码、测试、README、打包/真实项目冒烟脚本及正式 Runtime
+        回执后验收通过。Runtime
+        `.comet/runtime/native/changes/trellis-dashboard/state.json` binds
+        candidateId `bd8e62fc-2812-418c-9046-8b4e6e73b880`, inputFingerprint
+        `4140d0799c9082776fc4b94a736cc3002a551bed4e390a7524ea0439fb6bd956`,
+        workspace/worktree
+        `/Users/longchan/orca/projects/trellis-dashboard/.worktrees/trellis-dashboard`,
+        branch `comet/trellis-dashboard`, machine `ZBMAC-bcb59c9e5`, and
+        verifier execution
+        `skill-coordinated:verifier:10f4e5fd-4627-41c5-84c5-fbd04cce74a0`. Its
+        sole formal check is passed with exitCode 0. No scope-qualified,
+        reproducible defect was found.
+      truncated: false
+    completed_at: 2026-09-16T19:18:44.159Z
+history_overflow:
+  dropped_entries: 0
+  first_dropped_at: null
+  last_dropped_at: null
+  outcome_counts:
+    pass: 0
+    fail: 0
+    blocked: 0
+    execution-error: 0
+    recovery: 0
+verification_result: pass
+verification_report: verification.md
+archived: true
+created_at: 2026-09-16T16:24:55.790Z
