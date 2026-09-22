@@ -1,13 +1,28 @@
 {
   "name": "trellis-dashboard",
   "version": "0.1.0",
-  "private": true,
   "description": "A local, read-only dashboard for Trellis projects",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": { "node": ">=18.18" },
   "bin": { "trellis-dashboard": "bin/trellis-dashboard.mjs" },
-  "files": ["bin/", "dist/", "README.md"],
+  "files": ["bin/", "dist/", "README.md", "LICENSE"],
+  "keywords": [
+    "trellis",
+    "dashboard",
+    "project-panel",
+    "spec-driven-development",
+    "read-only",
+    "cli",
+    "local"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/007sair/trellis-dashboard.git"
+  },
+  "homepage": "https://github.com/007sair/trellis-dashboard#readme",
+  "bugs": { "url": "https://github.com/007sair/trellis-dashboard/issues" },
+  "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" },
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node bin/trellis-dashboard.mjs",
