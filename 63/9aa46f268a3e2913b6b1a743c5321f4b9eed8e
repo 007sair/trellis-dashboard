@@ -1,0 +1,21 @@
+README.md
+  s_6376079e143a80::t_055b19c6640c44 7,13-25,187
+.gitignore
+  s_6376079e143a80::t_e5f9bd484b43df 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "639aa46f268a3e2913b6b1a743c5321f4b9eed8e",
+  "prompts": {},
+  "sessions": {
+    "s_6376079e143a80": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0c877-0f82-742d-b1a5-384434b72bc9",
+        "model": "deepseek-flash"
+      },
+      "human_author": "longchan <longchan@jd.com>"
+    }
+  }
+}
