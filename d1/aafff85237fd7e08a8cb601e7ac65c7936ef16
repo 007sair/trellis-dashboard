@@ -1,0 +1,23 @@
+package-lock.json
+  s_6376079e143a80::t_a8773ab9c1aa5c 10
+.gitignore
+  s_6376079e143a80::t_a8773ab9c1aa5c 15
+package.json
+  s_6376079e143a80::t_a71f134ee9d4d9 6,9-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "d1aafff85237fd7e08a8cb601e7ac65c7936ef16",
+  "prompts": {},
+  "sessions": {
+    "s_6376079e143a80": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0c877-0f82-742d-b1a5-384434b72bc9",
+        "model": "deepseek-flash"
+      },
+      "human_author": "longchan <longchan@jd.com>"
+    }
+  }
+}
