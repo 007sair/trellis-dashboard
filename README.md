@@ -1,5 +1,9 @@
 # Trellis Dashboard
 
+[![npm version](https://img.shields.io/npm/v/trellis-dashboard.svg)](https://www.npmjs.com/package/trellis-dashboard)
+[![license](https://img.shields.io/npm/l/trellis-dashboard.svg)](./LICENSE)
+[![node](https://img.shields.io/node/v/trellis-dashboard.svg)](https://www.npmjs.com/package/trellis-dashboard)
+
 一个本地、只读的 [Trellis](https://github.com/mindfold-ai/Trellis) 项目面板。**安装一次，在任意包含 `.trellis/` 的项目里运行 `trellis-dashboard` 即可打开。**
 
 不需要数据库、Python 或 AI 服务，不修改目标项目，不执行它的脚本与 hooks。前端和服务端都随安装包构建，无须向目标项目添加依赖。
