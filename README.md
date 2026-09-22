@@ -4,13 +4,25 @@
 
 不需要数据库、Python 或 AI 服务，不修改目标项目，不执行它的脚本与 hooks。前端和服务端都随安装包构建，无须向目标项目添加依赖。
 
-> 当前是本地交付版本，**没有发布到 npm**。请使用下面的本地安装方式，不要假设 `npx trellis-dashboard` 已指向本项目。
+> 已发布到 npm：`npx trellis-dashboard` 或 `npm install --global trellis-dashboard` 即可使用，无需克隆本仓库。
 
 ## 快速开始
 
 运行环境：Node.js **18.18+**。开发和浏览器测试推荐 Node.js **22 LTS**，本项目在 Node.js 22 / macOS 上验证。
 
-### 1. 在 Dashboard 源码目录安装一次
+### 1. 安装
+
+```bash
+# 免安装直接运行
+npx trellis-dashboard --help
+
+# 或全局安装
+npm install --global trellis-dashboard
+```
+
+全局安装目录需在 PATH 中；若没有全局写权限，可以使用自己的 npm prefix，或使用上面的 `npx` 方式。不需要 `sudo` 修改目标项目。
+
+**从源码安装**（开发或本地验证）：
 
 ```bash
 npm install
@@ -24,8 +36,6 @@ npm install --global .
 npm pack
 npm install --global ./trellis-dashboard-0.1.0.tgz
 ```
-
-全局安装目录需在 PATH 中；若没有全局写权限，可以使用自己的 npm prefix，或使用下面的“免全局安装”方式。不需要 `sudo` 修改目标项目。
 
 ### 2. 在你的 Trellis 项目启动
 
@@ -174,4 +184,4 @@ dist/                 构建后随包分发的服务端和前端资产
 - [Trellis 官方仓库](https://github.com/mindfold-ai/Trellis)
 - [How It Works](https://docs.trytrellis.app/start/how-it-works)
 
-上游 Trellis 使用 AGPL-3.0；本地数据不会被纳入 Dashboard 分发包。此仓库当前为未公开发布的交付版本。
+上游 Trellis 使用 AGPL-3.0；本地数据不会被纳入 Dashboard 分发包。本项目以 MIT 许可发布于 npm。

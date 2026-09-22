@@ -10,6 +10,7 @@ test-results/
 playwright-report/
 coverage/
 *.tgz
+.npmrc
 .DS_Store
 .worktrees/
 .codegraph
